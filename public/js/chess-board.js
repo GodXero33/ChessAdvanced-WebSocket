@@ -23,6 +23,8 @@ class ChessBoard {
 		this.playerChance = true;
 		this.kingCheckedFirstPlayer = false;
 		this.kingCheckedSecondPlayer = false;
+		this.action = null;
+		this.hasRoom = false;
 	}
 
 	addCaptureItemToSlot (value) {
@@ -115,7 +117,7 @@ class ChessBoard {
 			return;
 		}
 
-		this.tiles[opponentKingCoords[1]][opponentKingCoords[0]].classList.add('king-capture');
+		// this.tiles[opponentKingCoords[1]][opponentKingCoords[0]].classList.add('king-capture');
 	}
 
 	checkForCapture (cx, cy, tx, ty, player) {
@@ -214,6 +216,8 @@ class ChessBoard {
 				this.checkForCapture(curCoords[0], curCoords[1], coords[0], coords[1], player);
 			}
 
+			if (player == this.player) this.action.click(coords);
+
 			this.deselect();
 			return;
 		}
@@ -225,16 +229,20 @@ class ChessBoard {
 				this.checkForMove(curCoords[0], curCoords[1], coords[0], coords[1], player);
 			}
 
+			if (player == this.player) this.action.click(coords);
+
 			this.deselect();
 			return;
 		}
+
+		if (player == this.player) this.action.click(coords);
 
 		this.select(clickedTile, coords); // If not move or capture, it's just select.
 	}
 
 	initEventListeners () {
 		this.boardContainer.addEventListener('click', (event) => {
-			if (this.playerChance && event.target !== this.boardContainer) this.clickOnTile(event.target, this.player);
+			if (this.playerChance && this.hasRoom && this.action && event.target !== this.boardContainer) this.clickOnTile(event.target, this.player);
 		});
 	}
 
